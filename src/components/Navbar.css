@@ -9,6 +9,7 @@
     position: fixed;
     left: 0;
     top: 0;
+    transition: all 0.3s ease;
 }
 
 .logo {
@@ -17,17 +18,25 @@
     margin-bottom: 40px;
 }
 
+.burger {
+    display: none;
+    font-size: 28px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
 .navbar nav {
     display: flex;
     flex-direction: column;
-
+    gap: 10px;
 }
 
 .navbar a {
     color: white;
     text-decoration: none;
     padding: 10px 0;
-    font-size: 24px;
+    font-size: 18px;
+    transition: background 0.2s;
 }
 
 .navbar a.active {
@@ -39,4 +48,48 @@
 .navbar a.logout {
     margin-top: auto;
     color: red;
+}
+
+/* ---------- Адаптивность ---------- */
+@media (max-width: 768px) {
+    .navbar {
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 20px;
+        position: relative;
+    }
+
+    .logo {
+        margin: 0;
+        font-size: 24px;
+    }
+
+    .burger {
+        display: block;
+        color: white;
+    }
+
+    .navbar nav {
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background-color: #001f3f;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px;
+        display: none;
+    }
+
+    .navbar nav.open {
+        display: flex;
+    }
+
+    .navbar a {
+        font-size: 16px;
+        padding: 10px 5px;
+    }
 }
