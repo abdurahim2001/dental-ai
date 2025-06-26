@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import { data } from 'react-router-dom';
 import './Home.css';
+import React, { useState, useEffect } from 'react';
+
+
+
 
 function Home() {
-    const [appointments, setAppointments] = useState([
-        { time: '09:00', name: 'Айбек уулу Нурлан', type: 'Коронка' },
-        { time: '11:30', name: 'Айбек уулу Нурлан', type: 'Осмотр' },
-        { time: '01:00', name: 'Айбек уулу Нурлан', type: 'Коронка' }
-    ]);
-
+    
+    const [appointments, setAppointments] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({
         surname: '',
@@ -15,6 +15,32 @@ function Home() {
         type: '',
         time: ''
     });
+    const [unreadMessages, setunreadMessages] = useState([])
+    const [diagnos, setDiagnos] = useState('');
+    const [diagnosList, setDiagnosList] = useState([]);
+
+    
+      useEffect(() => {
+      fetch('https://gist.githubusercontent.com/beibarsUmirzakov/a7fa7c1ff2d17b4a08e961260a90b514/raw/a8aacc49bc2922d0b703e2b43ce59b20ed1b62a5/gistfile1.txt') // update URL to match your backend
+      .then(res => res.json())
+      .then(data => {
+        console.log('Fetched data:', data.allMeetings);
+        setAppointments(data.allMeetings || []);
+        setunreadMessages(data.unread || []);
+        console.log(data.unread)
+    })
+      .catch(err => console.error('Error fetching appointments:', err));
+
+      fetch('https://gist.githubusercontent.com/beibarsUmirzakov/d8c2c964ee3c21a5fd86c9beffc72ec7/raw/f613e9c1abee4caaddf3ac8ad66c18102b86a89a/gistfile1.txt') 
+      .then(res => res.json())
+      .then(data => {
+        const diseases = data.items.filter(item => item.type === 'disease');
+        setDiagnosList(diseases)
+    })
+      .catch(err => console.error('Error fetching appointments:', err));
+  }, []);
+
+
 
     const handleChange = (e) => {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -33,6 +59,8 @@ function Home() {
         setShowForm(false);
     };
 
+    
+
     return (
         <div className="home-page">
             <h1 className="page-title">Главное</h1>
@@ -40,20 +68,50 @@ function Home() {
             <div className="top-section">
                 <div className="card new-appointments">
                     <h3>Новые записи</h3>
-                    {appointments.map((item, index) => (
+                    {appointments.map((item, index) => 
+                    
+                    {
+                        const dateStr = item.date;
+                        const date = new Date(dateStr);
+                        const formatter = new Intl.DateTimeFormat([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                    });
+                        const formattedTime = isNaN(date.getTime()) ? item.date : formatter.format(date);
+
+                    return(                  
                         <div key={index} className="appointment">
-                            <span className="time">{item.time}</span>
-                            <span className="name">{item.name}</span>
-                            <span className="type">{item.type}</span>
+                            <span className="time">{formattedTime}</span>
+                            <span className="name">{item.patient}</span>
+                            <span className="type">{item.title}</span>
                         </div>
-                    ))}
+                    )
+                    })}
                 </div>
 
                 <div className="card reminders">
                     <h3>Напоминания</h3>
                     <ul>
-                        <li><span className="dot" /> Повторный прием: мучаев — <small>17 мая</small></li>
-                        <li><span className="dot" /> Сделать результат аыльгат анализа Инex</li>
+                        {unreadMessages.map((item,index) => {
+                                const dateStr = item.time;
+                                const date = new Date(dateStr);
+                                const formatter = new Intl.DateTimeFormat([], {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: false
+                                });
+                            const formattedTime = formatter.format(date);
+
+                            return(
+                            <div key={index} className='messages'>
+                                <li className='time'>{formattedTime}</li>
+                                <li className='sender'>{item.sender}</li>
+                                <li className='text'>{item.text}</li>
+                            </div>
+                        )
+                        }
+                        )}
                     </ul>
                 </div>
             </div>
@@ -101,6 +159,14 @@ function Home() {
                                 placeholder="время"
                                 required
                             />
+                            <select value={diagnos} onChange={(e) => setDiagnos(e.target.value)}>
+                            <option value="">Выберите диагноз</option>
+                                {diagnosList.map((item, index) => (
+                             <option key={index} value={item.name}>
+                                {item.name}
+                            </option>
+                                ))}
+                        </select>
                             <button type="submit">Добавить запись</button>
                         </form>
                     </div>
@@ -109,17 +175,14 @@ function Home() {
 
             <div className="card patients">
                 <h3>Последние пациенты</h3>
-                <div className="patient">
-                    <span className="icon">👤</span>
-                    <span className="name">Токтосунов Арсен</span>
-                    <span className="type">Коронка</span>
-                    <span className="date">12.05.2025</span>
-                </div>
-                <div className="patient">
-                    <span className="icon">👤</span>
-                    <span className="name">Токтосунов Арсен</span>
-                    <span className="type">Коронка</span>
-                </div>
+                
+                        <div className="patient">
+                            <span className="icon">👤</span>
+                            <span className="name">Токтосунов Арсен</span>
+                            <span className="type">Коронка</span>
+                        </div>
+                
+                
             </div>
         </div>
     );

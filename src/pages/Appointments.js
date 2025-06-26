@@ -1,16 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './appointments.css';
 
 export default function Appointments() {
-    const [records, setRecords] = useState([
-        { time: '09:00', name: 'Иван Иванов', procedure: 'Пломбирование', status: 'Подтвержден' },
-        { time: '09:00', name: 'Иван Иванов', procedure: 'Пломбирование', status: 'Ожидания' },
-        { time: '09:00', name: 'Иван Иванов', procedure: 'Пломбирование', status: 'Отменен' },
-    ]);
+    const [records, setRecords] = useState([]);
 
     const [showModal, setShowModal] = useState(false);
     const [form, setForm] = useState({ time: '', name: '', surname: '' });
     const [searchTerm, setSearchTerm] = useState('');
+    const [diagnos, setDiagnos] = useState('');
+    const [diagnosList, setDiagnosList] = useState([]);
+
 
     const handleInputChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -27,10 +26,31 @@ export default function Appointments() {
         setShowModal(false);
     };
 
-    // Фильтруем записи по поисковому запросу (по имени/фамилии)
+    // Фильтруем записи по поисковому запросу (по имени/фамилии)хахахахах досум чат без палево кылып кой а то УЯТ!!
     const filteredRecords = records.filter(rec =>
-        rec.name.toLowerCase().includes(searchTerm.toLowerCase())
+        rec.patient.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+
+    useEffect(() => {
+      fetch('https://gist.githubusercontent.com/beibarsUmirzakov/a7fa7c1ff2d17b4a08e961260a90b514/raw/a8aacc49bc2922d0b703e2b43ce59b20ed1b62a5/gistfile1.txt') // update URL to match your backend
+      .then(res => res.json())
+      .then(data => {
+        setRecords(data.allMeetings || []);
+    })
+      .catch(err => console.error('Error fetching appointments:', err));
+
+    fetch('https://gist.githubusercontent.com/beibarsUmirzakov/d8c2c964ee3c21a5fd86c9beffc72ec7/raw/f613e9c1abee4caaddf3ac8ad66c18102b86a89a/gistfile1.txt') 
+      .then(res => res.json())
+      .then(data => {
+        const diseases = data.items.filter(item => item.type === 'disease');
+        setDiagnosList(diseases)
+    })
+      .catch(err => console.error('Error fetching appointments:', err));
+
+
+  }, []);
+
 
     return (
         <div className="app-container">
@@ -57,14 +77,28 @@ export default function Appointments() {
                 </thead>
                 <tbody>
                 {filteredRecords.length > 0 ? (
-                    filteredRecords.map((rec, index) => (
+                    filteredRecords.map((rec, index) => {
+
+                        const dateStr = rec.date;
+                        const date = new Date(dateStr);
+                        const formatter = new Intl.DateTimeFormat([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                    });
+                        const formattedTime = isNaN(date.getTime()) ? rec.date : formatter.format(date);
+
+
+
+                        return(
                         <tr key={index}>
-                            <td>{rec.time}</td>
-                            <td>{rec.name}</td>
-                            <td>{rec.procedure}</td>
+                            <td>{formattedTime}</td>
+                            <td>{rec.patient}</td>
+                            <td>{rec.title}</td>
                             <td className="status-link">{rec.status}</td>
                         </tr>
-                    ))
+                    )
+                    })
                 ) : (
                     <tr>
                         <td colSpan="4" style={{ textAlign: 'center' }}>Нет записей</td>
@@ -103,6 +137,14 @@ export default function Appointments() {
                             value={form.surname}
                             onChange={handleInputChange}
                         />
+                        <select value={diagnos} onChange={(e) => setDiagnos(e.target.value)}>
+                            <option value="">Выберите диагноз</option>
+                                {diagnosList.map((item, index) => (
+                             <option key={index} value={item.name}>
+                                {item.name}
+                            </option>
+                                ))}
+                        </select>
                         <button className="add-button" onClick={addRecord}>Добавить</button>
                     </div>
                 </div>
@@ -110,3 +152,4 @@ export default function Appointments() {
         </div>
     );
 }
+
