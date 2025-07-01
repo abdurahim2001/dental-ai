@@ -24,10 +24,8 @@ function Home() {
       fetch('https://gist.githubusercontent.com/beibarsUmirzakov/a7fa7c1ff2d17b4a08e961260a90b514/raw/a8aacc49bc2922d0b703e2b43ce59b20ed1b62a5/gistfile1.txt') // update URL to match your backend
       .then(res => res.json())
       .then(data => {
-        console.log('Fetched data:', data.allMeetings);
         setAppointments(data.allMeetings || []);
         setunreadMessages(data.unread || []);
-        console.log(data.unread)
     })
       .catch(err => console.error('Error fetching appointments:', err));
 
