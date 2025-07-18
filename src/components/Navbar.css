@@ -1,112 +1,83 @@
-.navbar {
-    width: 200px;
-    height: 100vh;
-    background-color: #001f3f;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    position: fixed;
-    left: 0;
-    top: 0;
-    transition: all 0.3s ease;
-}
-
-
-.icon{
-    color: #c0c4c8;
-    width: 50px;
-    height: 50px;
-}
-
-.nav-content{
-    justify-content: space-around;
-    display: flex;
-    align-items: center;
-}
-
-.logo {
-    font-size: 28px;
-    font-weight: bold;
-    margin-bottom: 40px;
-}
-
-.burger {
-    display: none;
-    font-size: 28px;
-    cursor: pointer;
-    margin-bottom: 20px;
-}
-
-.navbar nav {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.navbar a {
+/* Общие стили */
+.nav-content {
     color: white;
     text-decoration: none;
-    padding: 10px 0;
-    font-size: 18px;
-    transition: background 0.2s;
 }
 
-.navbar a.active {
-    background-color: #004080;
-    border-radius: 5px;
-    padding-left: 5px;
+.nav-content:hover,
+.active {
+    font-weight: bold;
+    color: #00aced;
 }
 
-.navbar a.logout {
-    margin-top: auto;
-    color: red;
+/* По умолчанию скрываем */
+.navbar-desktop, .navbar-mobile {
+    display: none;
+}
+.nav-content svg {
+    margin-right: 8px; /* или больше, если хочешь, например 12px */
+    vertical-align: middle;
+}
+.nav-content svg {
+    width: 25px;
+    height: 25px;
 }
 
-/* ---------- Адаптивность ---------- */
-@media (max-width: 768px) {
-    .navbar {
-    width: 100%;
-    height: 10%;
-    background-color: #001f3f;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    transition: all 0.3s ease;
-    }
-
-    .logo {
-        margin: 0;
-        font-size: 24px;
-    }
-
-    .burger {
-        display: block;
+/* 1024 и больше — боковое меню */
+@media (min-width: 1024px) {
+    .navbar-desktop {
+        display: flex;
+        flex-direction: column;
+        width: 200px;
+        background-color: #001f3f;
         color: white;
+        padding: 20px;
+        min-height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
+    .nav-content svg {
+        width: 20px;
+        height: 20px;
+    }
+    .navbar-desktop .logo {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 20px;
     }
 
-    .navbar nav {
-        position: absolute;
+    .navbar-desktop nav {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+
+/* 768 и меньше — нижнее меню */
+@media (max-width: 768px) {
+    .navbar-mobile {
+        display: flex;
+        position: fixed;
         bottom: 0;
         left: 0;
         width: 100%;
+        height: 60px;
         background-color: #001f3f;
+        justify-content: space-around;
+        align-items: center;
+        z-index: 1000;
+    }
+    .nav-content svg {
+        width: 18px;
+        height: 18px;
+    }
+    .nav-content {
         flex-direction: column;
-        align-items: flex-start;
-        padding: 20px;
-        display: none;
     }
 
-    .navbar nav.open {
-        display: flex;
-    }
-
-    .navbar a {
-        font-size: 16px;
-        padding: 10px 5px;
+    .nav-content img.icon {
+        width: 24px;
+        height: 24px;
     }
 }

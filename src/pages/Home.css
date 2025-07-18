@@ -28,9 +28,9 @@
     background: #fff;
     border-radius: 25px;
     box-shadow: 0 5px 10px rgba(0,0,0,0.1);
-    padding: 20px;
+    padding: 15px;
     flex: 1;
-    min-width: 280px;
+    min-width: 100%;
     max-width: 100%;
     margin-bottom: 20px;
 }
@@ -239,7 +239,8 @@
 
 @media (max-width: 480px) {
     .appointment {
-        font-size: 14px;
+        font-size: 8px;
+        padding: 0px;
     }
 
     .patient {
@@ -255,8 +256,12 @@
     .btn-group {
         flex-direction: column;
     }
+ .card{
+     padding: 10px;
 
+ }
     .actions button {
-        padding: 14px;
+        padding: 3px;
+        font-size: 10px;
     }
 }
